@@ -18,30 +18,15 @@
 
   </div>
 
-  <div id="maineditor" contenteditable="true">paste text, begin transcribing, or begin typing notes here...</div>
+  <div id="maineditor" contenteditable="true"></div>
+
+  <div id="tab-navigation">
+
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
-  <script>
 
-    document.addEventListener('paste', function (event) {
-      event.preventDefault();
-      // Get plain text from the clipboard
-      const plainText = (event.clipboardData || window.clipboardData).getData('text/plain');
 
-      // Insert the plain text at the caret position
-      const selection = window.getSelection();
-      if (!selection.rangeCount) return;
-
-      const range = selection.getRangeAt(0);
-      range.deleteContents(); // Remove any selected content
-      range.insertNode(document.createTextNode(plainText));
-
-      // Move the cursor to the end of the inserted text
-      range.collapse(false);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    });
-
-  </script>
 </body>
 
 </html>

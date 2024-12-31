@@ -39,7 +39,7 @@ const colorDefinitions:Color[] = [
 ];
 
 const colorpadDoc: ColorpadDoc = {
-    body: "wwpaste text, begin transcribing, or begin typing notes here...",
+    body: "paste text, begin transcribing, or begin typing notes here...",
     colors: [...colorDefinitions],
     settings: {
       theme: "dark",
@@ -51,7 +51,7 @@ const colorpadDoc: ColorpadDoc = {
   };
   var contextMenu:HTMLElement|null = null;
   var mainEditor:HTMLElement|null = null;
-  var contextMenu:HTMLElement|null = null;
+  var tabContainer:HTMLElement|null = null;
 //   read the first document from localForge, or save one if none exists:
 
 //localForge Here
@@ -226,20 +226,47 @@ async function saveColorpadDoc(): Promise<void> {
 }
 
 function reactivityUpdates(){
-    mainEditor = document.getElementById('maineditor');
-    contextMenu = document.getElementById('hovermenu');
     
     //initial update
     updateDynamicStyles(colorpadDoc.colors);
     populateContextMenu(colorpadDoc.colors);
+    createTabNavigation(colorpadDoc.colors); // Add this line
+}
+
+function createTabNavigation(colors: Color[]) {
+    if (tabContainer) {
+        tabContainer.innerHTML = ''; // Clear existing content
+
+        colors.forEach(color => {
+            const tab = document.createElement('div');
+            tab.className = 'color-tab';
+            tab.style.backgroundColor = `var(--color-${color.id})`;
+            
+
+            // tab.addEventListener('mouseenter', () => {
+            //     tab.style.transform = 'translateY(0)';
+            // });
+
+            // tab.addEventListener('mouseleave', () => {
+            //     tab.style.transform = 'translateY(-50%)';
+            // });
+
+            tab.addEventListener('click', () => {
+                console.log(`Clicked color: ${color.name}`);
+            });
+
+            tabContainer?.appendChild(tab);
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    
+    contextMenu = document.getElementById('hovermenu');
+    mainEditor = document.getElementById('maineditor');
+    tabContainer = document.getElementById('tab-navigation');
     reactivityUpdates();
 
-   
     mainEditor?.addEventListener('mouseup', function (event) {
         const selection = window.getSelection();
         console.log('Selection valid?', selection);
@@ -248,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // const range = selection.getRangeAt(0);
             // const rect = range.getBoundingClientRect();
             contextMenu.classList.add('visible');
-            contextMenu.style.top = `${event.clientY - parseFloat(getComputedStyle(mainEditor).lineHeight)}px`;
+            contextMenu.style.top = `${event.clientY - parseFloat(getComputedStyle(mainEditor as HTMLElement).lineHeight)}px`;
             contextMenu.style.left = `${event.clientX}px`; contextMenu.style.display = 'block';
         } else {
             if(contextMenu){
@@ -261,6 +288,25 @@ document.addEventListener('DOMContentLoaded', () => {
     mainEditor?.addEventListener('paste', function () {
         saveColorpadDoc(); // Save after paste operation
     });
+
+    document.addEventListener('paste', function (event) {
+        event.preventDefault();
+        // Get plain text from the clipboard
+        const plainText = event.clipboardData?.getData('text/plain');
+  
+        // Insert the plain text at the caret position
+        const selection = window.getSelection();
+        if (!selection?.rangeCount) return;
+  
+        const range = selection.getRangeAt(0);
+        range.deleteContents(); // Remove any selected content
+        range.insertNode(document.createTextNode(plainText??""));
+  
+        // Move the cursor to the end of the inserted text
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      });
 
     let typingTimeout: number | undefined;
     mainEditor?.addEventListener('input', function () {
@@ -279,6 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    
+
 });
 

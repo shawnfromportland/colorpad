@@ -125,3 +125,29 @@ table {
     /* Ensure buttons maintain their layout */
     flex-shrink: 0;
 }
+
+
+#tab-navigation {
+    position: absolute;
+    top: 0; /* Hide more of the dots off the top of the viewport */
+    right: 0; /* Align to the right */
+    text-align: end;
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    padding: 10px;
+  }
+  
+  .color-tab {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin-right: 10px; /* Adjust margin for horizontal spacing */
+    transition: transform 0.3s ease;
+    transform: translateY(-80%); /* Only 20% of the circle should show on screen in inactive mode */
+    cursor: pointer;
+}
+  
+  .color-tab:hover {
+    transform: translateY(-60%); /* Slide out only half as much */
+  }
+  
