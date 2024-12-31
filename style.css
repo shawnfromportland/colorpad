@@ -1,0 +1,127 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    line-height: 1.6;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+
+#maineditor{
+    width: 100vw; height: 100vh; border: none; outline: none; box-shadow: none;
+    margin: 50px;
+    font-size: 2rem;
+    line-height: 1.8;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+.highlighted {
+    /* Your desired highlight color */
+    /* display: inline-block; */
+    /* Ensures the span respects text line height */
+    /* line-height: inherit; */
+    /* Inherit the parent's line height */
+    /* margin: 0; */
+    /* Remove any unwanted spacing */
+
+     display: inline; /* Keeps the span inline */
+    line-height: inherit; /* Inherit the parent's line height */
+  box-decoration-break: clone;
+
+}
+
+.highlightbutton {
+    width: 2.1rem;
+    height: 2.1rem;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: filter 0.2s ease;
+    /* makes the darkening smooth */
+}
+
+.highlightbutton:hover {
+    filter: brightness(0.9);
+    /* reduces brightness to 80% */
+}
+
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+        /* Make sure elements keep their horizontal position during scale */
+        transform-origin: left center;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        transform-origin: left center;
+    }
+}
+
+#hovermenu {
+    position:absolute;
+    visibility: hidden;
+    /* Ensure flex layout is maintained during animation */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+     width: fit-content; 
+}
+
+#hovermenu.visible {
+    visibility: visible;
+}
+
+#hovermenu.visible .highlightbutton {
+    animation: popIn 150ms ease-out forwards;
+    opacity: 0;
+    animation-delay: calc(var(--n) * 50ms);
+}
+
+#hovermenu.visible .highlightbutton:nth-child(n) {
+    --n: calc(n - 1);
+}
+
+.highlightbutton {
+    /* Ensure buttons maintain their layout */
+    flex-shrink: 0;
+}
