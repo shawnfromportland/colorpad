@@ -8,46 +8,51 @@ const colorpadDoc: ColorpadDoc = {
     colors: [
         {
             id: 1,
-            value: '#003049',
-            name: 'Prussian blue',
+            value: '#5ebd3e',
+            name: 'Kelly green',
             order: 1
         },
         {
             id: 2,
-            value: '#d62828',
-            name: 'Fire engine red',
+            value: '#ffb900',
+            name: 'Selective yellow',
             order: 2
         },
         {
             id: 3,
-            value: '#f77f00',
-            name: 'Orange (wheel)',
+            value: '#f78200',
+            name: 'UT orange',
             order: 3
         },
         {
             id: 4,
-            value: '#fcbf49',
-            name: 'Xanthous',
+            value: '#e23838',
+            name: 'Imperial red',
             order: 4
         },
         {
             id: 5,
-            value: '#eae2b7',
-            name: 'Vanilla',
+            value: '#973999',
+            name: 'Plum',
             order: 5
+        },
+        {
+            id: 6,
+            value: '#009cdf',
+            name: 'Celestial Blue',
+            order: 6
         }
     ],
     settings: {
       theme: "dark",
-      fontSize: 14,
+      fontSize: 1.4,
       lineHeight: 1.5,
       margins: 2,
       pinnedLineSpacing: true,
       pinnedTextSize: true,
       pinnedPadding: true
     },
-
-  };
+};
 
 // main interactive HTML elements for logic in this script
 var contextMenu:HTMLElement|null = null;
@@ -111,12 +116,18 @@ function updateDynamicStyles(colors:Color[]) {
     for (const color of colors) {
         styles += `    --color-${color.id}: ${color.value};\n`;
     }
+    styles += `    --line-spacing: ${colorpadDoc.settings.lineHeight};\n`;
+    styles += `    --text-size: ${colorpadDoc.settings.fontSize}rem;\n`;
+    styles += `    --margins: ${colorpadDoc.settings.margins}rem;\n`;
     styles += '}\n';
 
     // Generate CSS rules for each color ID using the CSS variables
     for (const color of colors) {
         styles += `[data-color-id="${color.id}"] { background-color: var(--color-${color.id}); }\n`;
     }
+
+
+    
 
     // Add the rules to the style element
     styleElement.textContent = styles;
@@ -459,6 +470,8 @@ function syncSliderValues() {
             settingsPaddingSlider.value = paddingSlider.value;
         }
     }
+    
+    // saveColorpadDoc();
 }
 
 // Function to update the visibility of sliders based on pinned settings
@@ -476,7 +489,32 @@ function updateSliderVisibility() {
     if (paddingSliderContainer) {
         paddingSliderContainer.style.display = colorpadDoc.settings.pinnedPadding ? 'block' : 'none';
     }
+    // Sync initial slider values with colorpadDoc settings
+    const settingsLineSpacingSlider = document.getElementById('settings-line-spacing-slider') as HTMLInputElement;
+    const settingsTextSizeSlider = document.getElementById('settings-text-size-slider') as HTMLInputElement;
+    const settingsPaddingSlider = document.getElementById('settings-padding-slider') as HTMLInputElement;
+    lineSpacingSlider = document.getElementById('line-spacing-slider') as HTMLInputElement;
+    textSizeSlider = document.getElementById('text-size-slider') as HTMLInputElement;
+    paddingSlider = document.getElementById('padding-slider') as HTMLInputElement;
 
+    if (settingsLineSpacingSlider) {
+        settingsLineSpacingSlider.value = colorpadDoc.settings.lineHeight.toString();
+    }
+    if (settingsTextSizeSlider) {
+        settingsTextSizeSlider.value = colorpadDoc.settings.fontSize.toString();
+    }
+    if (settingsPaddingSlider) {
+        settingsPaddingSlider.value = colorpadDoc.settings.margins.toString();
+    }
+    if (lineSpacingSlider) {
+        lineSpacingSlider.value = colorpadDoc.settings.lineHeight.toString();
+    }
+    if (textSizeSlider) {
+        textSizeSlider.value = colorpadDoc.settings.fontSize.toString();
+    }
+    if (paddingSlider) {
+        paddingSlider.value = colorpadDoc.settings.margins.toString();
+    }
     syncSliderValues(); // Sync slider values after updating visibility
 }
 
@@ -498,6 +536,25 @@ function togglePinning(settingKey: keyof ColorpadDoc['settings']) {
     colorpadDoc.settings[settingKey] = !colorpadDoc.settings[settingKey];
     saveColorpadDoc();
     updateSliderVisibility();
+}
+
+// Function to copy all highlights to JSON
+function copyAllHighlightsToJson(event: MouseEvent) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(mainEditor?.innerHTML || '', 'text/html');
+    const jsonData: { [key: string]: string[] } = {};
+
+    colorpadDoc.colors.forEach(color => {
+        const spans = doc.querySelectorAll(`span[data-color-id="${color.id}"]`);
+        const citations = Array.from(spans).map(span => span.textContent?.trim()).filter(Boolean);
+        if (citations.length > 0) {
+            jsonData[color.name] = citations;
+        }
+    });
+
+    navigator.clipboard.writeText(JSON.stringify(jsonData, null, 2));
+    console.log('Copied All Highlights JSON:', jsonData);
+    showCopyNotification(event, 'All Highlights JSON copied!');
 }
 
 //DOM LOAD:
@@ -631,6 +688,7 @@ document.addEventListener('DOMContentLoaded',async () => {
       (mainEditor as HTMLInputElement).style.paddingRight = paddingValue;
       (citationView as HTMLElement).style.paddingLeft = paddingValue;
       (citationView as HTMLElement).style.paddingRight = paddingValue;
+      document.documentElement.style.setProperty('--margins', paddingValue);
       colorpadDoc.settings.margins = parseFloat((event.target as HTMLInputElement).value);
       saveColorpadDoc();
     });
@@ -662,6 +720,7 @@ document.addEventListener('DOMContentLoaded',async () => {
         lineSpacingSlider!.value = value; // Sync with pinned slider
         colorpadDoc.settings.lineHeight = parseFloat(value);
         saveColorpadDoc();
+        updateDynamicStyles
     });
 
     settingsTextSizeSlider?.addEventListener('input', (event) => {
@@ -671,6 +730,7 @@ document.addEventListener('DOMContentLoaded',async () => {
         colorpadDoc.settings.fontSize = parseFloat(value);
         saveColorpadDoc();
     });
+    
 
     settingsPaddingSlider?.addEventListener('input', (event) => {
         const paddingValue = (event.target as HTMLInputElement).value + 'rem';
@@ -682,6 +742,9 @@ document.addEventListener('DOMContentLoaded',async () => {
         colorpadDoc.settings.margins = parseFloat((event.target as HTMLInputElement).value);
         saveColorpadDoc();
     });
+
+    const copyAllJsonButton = document.getElementById('copy-all-json-button');
+    copyAllJsonButton?.addEventListener('click', copyAllHighlightsToJson);
 
     updateSliderVisibility();
 });

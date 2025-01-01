@@ -2,6 +2,7 @@
     --base-spacing: 1rem; /* Base spacing variable */
     --line-spacing: 1.8; /* Line spacing variable */
     --text-size: 1rem; /* Text size variable */
+    --margins: 5rem; /* Text size variable */
 }
 
 /* Reset CSS */
@@ -57,6 +58,8 @@ table {
     outline: none;
     box-shadow: none;
     padding: calc(var(--base-spacing) * 5); /* Huge left-right padding */
+    padding-left: calc(var(--margins)); /* Double the left padding */
+    padding-right: calc(var(--margins)); /* Double the left padding */
     font-size: calc(var(--text-size)); /* Use text size variable */
     line-height: var(--line-spacing); /* Use line spacing variable */
     font-family: Georgia, 'Times New Roman', Times, serif;
