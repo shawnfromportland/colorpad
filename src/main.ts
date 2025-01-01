@@ -17,24 +17,36 @@ type ColorpadDoc = {
     settings: Settings; // Object list of settings keys and values
 };
 
-const colorDefinitions:Color[] = [
+const colorDefinitions: Color[] = [
     {
         id: 1,
-        value: '#FF0000',
-        name: 'Red',
+        value: '#fafafa',
+        name: 'Seasalt',
         order: 1
     },
     {
         id: 2,
-        value: '#00FF00',
-        name: 'Green',
+        value: '#f2f2f2',
+        name: 'White smoke',
         order: 2
     },
     {
         id: 3,
-        value: '#FFFF00',
-        name: 'Yellow',
+        value: '#ececec',
+        name: 'Anti-flash white',
         order: 3
+    },
+    {
+        id: 4,
+        value: '#e8e8e8',
+        name: 'Platinum',
+        order: 4
+    },
+    {
+        id: 5,
+        value: '#ff867f',
+        name: 'Coral pink',
+        order: 5
     }
 ];
 
@@ -366,7 +378,24 @@ document.addEventListener('DOMContentLoaded',async () => {
         }
     });
 
-    mainEditor?.addEventListener('paste', function () {
+    mainEditor?.addEventListener('paste', function (event) {
+        event.preventDefault();
+        // Get plain text from the clipboard
+        const plainText = event.clipboardData?.getData('text/plain');
+
+        // Insert the plain text at the caret position
+        const selection = window.getSelection();
+        if (!selection?.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        range.deleteContents(); // Remove any selected content
+        range.insertNode(document.createTextNode(plainText ?? ""));
+
+        // Move the cursor to the end of the inserted text
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
         saveColorpadDoc(); // Save after paste operation
     });
 
