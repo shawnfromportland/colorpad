@@ -251,6 +251,33 @@ function displayCitationView(color: Color) {
             const citationSpan = document.createElement('span');
             citationSpan.className = 'citation-highlight';
             citationSpan.textContent = span.textContent;
+
+            // Create copy button
+            const copyButton = document.createElement('button');
+            copyButton.classList.add('copy-button');
+            copyButton.textContent = 'Copy';
+            copyButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent event propagation
+                navigator.clipboard.writeText(span.textContent || '');
+                console.log('Copied text:', span.textContent);
+            });
+
+            // Create go to button
+            const goToButton = document.createElement('button');
+            goToButton.classList.add('goto-button');
+            goToButton.textContent = 'Go to';
+            goToButton.addEventListener('click', () => {
+                hideCitationView();
+                const originalSpan = mainEditor.querySelector(`span[data-color-id="${color.id}"]`);
+                if (originalSpan) {
+                    originalSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+
+            // Append buttons to the citation span
+            citationSpan.appendChild(copyButton);
+            citationSpan.appendChild(goToButton);
+
             citationView.appendChild(citationSpan);
         });
 

@@ -242,3 +242,11 @@ table {
     background-color: var(--color-1);
 }
 
+.copy-button{
+    padding: calc(var(--base-spacing) * 4);
+    border: 1px solid gray;
+}
+.goto-button{
+    border: 1px solid gray;
+    padding: calc(var(--base-spacing) * 4);
+}
