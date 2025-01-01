@@ -272,10 +272,10 @@ function reactivityUpdates(){
 }
 
 // Function to show copy notification
-function showCopyNotification(event: MouseEvent) {
+function showCopyNotification(event: MouseEvent, message: string = 'Text copied!') {
     const notification = document.createElement('div');
     notification.className = 'copy-notification';
-    notification.textContent = 'Text copied!';
+    notification.textContent = message;
     document.body.appendChild(notification);
 
     const { clientX: x, clientY: y } = event;
@@ -319,8 +319,23 @@ function displayCitationView(color: Color) {
             saveColorpadDoc();
         });
 
+        const copyJsonButton = document.createElement('button');
+        copyJsonButton.id = 'copy-json-button';
+        copyJsonButton.textContent = '📄 JSON';
+        copyJsonButton.addEventListener('click', (event) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(mainEditor?.innerHTML || '', 'text/html');
+            const spans = doc.querySelectorAll(`span[data-color-id="${color.id}"]`);
+            const citations = Array.from(spans).map(span => span.textContent?.trim()).filter(Boolean);
+            const jsonData = { [color.name]: citations };
+            navigator.clipboard.writeText(JSON.stringify(jsonData, null, 2));
+            console.log('Copied JSON:', jsonData);
+            showCopyNotification(event, 'JSON copied!');
+        });
+
         colorInfo.appendChild(colorCircle);
         colorInfo.appendChild(colorNameInput);
+        colorInfo.appendChild(copyJsonButton);
         citationView.appendChild(colorInfo);
 
         const parser = new DOMParser();
@@ -616,18 +631,24 @@ document.addEventListener('DOMContentLoaded',async () => {
       (mainEditor as HTMLInputElement).style.paddingRight = paddingValue;
       (citationView as HTMLElement).style.paddingLeft = paddingValue;
       (citationView as HTMLElement).style.paddingRight = paddingValue;
+      colorpadDoc.settings.margins = parseFloat((event.target as HTMLInputElement).value);
+      saveColorpadDoc();
     });
 
     // line spacing slider event listener
     lineSpacingSlider.addEventListener('input', (event) => {
         const value = (event.target as HTMLInputElement).value;
         document.documentElement.style.setProperty('--line-spacing', value);
+        colorpadDoc.settings.lineHeight = parseFloat(value);
+        saveColorpadDoc();
     });
 
     // text size slider event listener
     textSizeSlider.addEventListener('input', (event) => {
         const value = (event.target as HTMLInputElement).value;
         document.documentElement.style.setProperty('--text-size', `${value}rem`);
+        colorpadDoc.settings.fontSize = parseFloat(value);
+        saveColorpadDoc();
     });
 
     // Add event listeners for the settings view sliders

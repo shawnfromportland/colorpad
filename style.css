@@ -81,7 +81,7 @@ table {
     position: absolute; /* Ensure it is positioned over the main editor */
     top: 0;
     left: 0;
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    background: rgba(255, 255, 255, 0.78); /* Semi-transparent background */
     z-index: 2; /* Ensure it is above the main editor */
 }
 
@@ -404,11 +404,25 @@ input[type="range"]::-ms-thumb {
 }
 
 #color-name-input {
-    font-size: calc(var(--text-size)*2);
+    font-size: 2rem;
     font-weight:bolder;
     line-height: 2rem;
     padding: 1rem;
     padding-left: calc(var(--base-spacing) * 1.5);
     border: 1px solid gray;
     border-radius: 0.25rem;
+}
+
+#copy-json-button {
+    margin-left: calc(var(--base-spacing) * 1);
+    padding: calc(var(--base-spacing) * 0.5);
+    border: 1px solid gray;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: var(--text-size);
+    background-color: white;
+}
+
+#copy-json-button:hover {
+    background-color: lightgray;
 }
