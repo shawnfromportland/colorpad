@@ -1,3 +1,9 @@
+:root {
+    --base-spacing: 1rem; /* Base spacing variable */
+    --line-spacing: 1.8; /* Line spacing variable */
+    --text-size: 2rem; /* Text size variable */
+}
+
 /* Reset CSS */
 * {
     margin: 0;
@@ -39,29 +45,24 @@ table {
     border-spacing: 0;
 }
 
-
-#maineditor{
-    width: 100vw; height: 100vh; border: none; outline: none; box-shadow: none;
-    margin: 50px;
-    font-size: 2rem;
-    line-height: 1.8;
+#maineditor {
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: calc(var(--base-spacing) * 5); /* Huge left-right padding */
+    font-size: var(--text-size); /* Use text size variable */
+    line-height: var(--line-spacing); /* Use line spacing variable */
     font-family: Georgia, 'Times New Roman', Times, serif;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
-
 .highlighted {
-    /* Your desired highlight color */
-    /* display: inline-block; */
-    /* Ensures the span respects text line height */
-    /* line-height: inherit; */
-    /* Inherit the parent's line height */
-    /* margin: 0; */
-    /* Remove any unwanted spacing */
-
-     display: inline; /* Keeps the span inline */
+    display: inline; /* Keeps the span inline */
     line-height: inherit; /* Inherit the parent's line height */
-  box-decoration-break: clone;
-
+    box-decoration-break: clone;
 }
 
 .highlightbutton {
@@ -74,14 +75,12 @@ table {
     justify-content: center;
     align-items: center;
     transition: filter 0.2s ease;
-    /* makes the darkening smooth */
 }
 
 .highlightbutton:hover {
     filter: brightness(0.9);
     /* reduces brightness to 80% */
 }
-
 
 @keyframes popIn {
     0% {
@@ -98,13 +97,13 @@ table {
 }
 
 #hovermenu {
-    position:absolute;
+    position: absolute;
     visibility: hidden;
     /* Ensure flex layout is maintained during animation */
     display: flex;
     flex-direction: row;
     align-items: center;
-     width: fit-content; 
+    width: fit-content;
 }
 
 #hovermenu.visible {
@@ -126,7 +125,6 @@ table {
     flex-shrink: 0;
 }
 
-
 #tab-navigation {
     position: fixed; /* Change to fixed */
     z-index: 1000; /* Ensure it stays on top of everything */
@@ -135,35 +133,34 @@ table {
     text-align: end;
     display: flex;
     flex-direction: row; /* Horizontal layout */
-    padding: 10px;
-  }
-  
-  .color-tab {
-    width: 70px;
-    height: 70px;
+    padding: calc(var(--base-spacing) * 1);
+}
+
+.color-tab {
+    width: 4.375rem; /* 70px to rem */
+    height: 4.375rem; /* 70px to rem */
     border-radius: 50%;
-    margin-right: 10px; /* Adjust margin for horizontal spacing */
+    margin-right: calc(var(--base-spacing) * 1);
     transition: transform 0.3s ease;
     transform: translateY(-80%); /* Only 20% of the circle should show on screen in inactive mode */
     cursor: pointer;
 }
-  
-  .color-tab:hover {
+
+.color-tab:hover {
     transform: translateY(-60%); /* Slide out only half as much */
-  }
+}
 
 #citation-view {
-   
     width: 100%;
-    max-width: 800px;
+    max-width: 50rem; /* 800px to rem */
     height: 100vh;
-    padding: 50px;
+    padding: calc(var(--base-spacing) * 2);
     background-color: white;
     visibility: hidden;
+    display: none;
     overflow: auto;
-    padding: 20px;
     box-sizing: border-box;
-    margin-left:auto;
+    margin-left: auto;
     margin-right: auto;
     display: flex;
     flex-direction: column;
@@ -171,9 +168,9 @@ table {
 }
 
 .citation-highlight {
-    border: 2px dashed #000;
-    padding: 5px;
-    margin-bottom: 10px;
+    border: 0.125rem dashed #000; /* 2px to rem */
+    padding: calc(var(--base-spacing) * 0.25);
+    margin-bottom: calc(var(--base-spacing) * 0.5);
     display: block;
     width: 80%; /* Adjust width as needed */
     text-align: center;

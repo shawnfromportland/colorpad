@@ -31,6 +31,14 @@ Colorpad is the perfect tool for:
 - Transcribing
 - Quickly organizing new information
 
+
+## Examples & use cases
+- quick random access to information you've highlighted
+- copy JSON to provide your highlighted snippets as context or instructions to a LLM or script
+- transcribing
+- editing your writing
+
+
 ### Future Plans
 Colorpad will expand to a native mobile app for even greater flexibility.
 

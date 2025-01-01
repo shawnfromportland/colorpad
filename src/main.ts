@@ -402,5 +402,25 @@ document.addEventListener('DOMContentLoaded',async () => {
 
     citationView.addEventListener('click', hideCitationView);
 
+    const lineSpacingSlider = document.getElementById('line-spacing-slider') as HTMLInputElement;
+    const textSizeSlider = document.getElementById('text-size-slider') as HTMLInputElement;
+    const paddingSlider = document.getElementById('padding-slider') as HTMLInputElement;
+
+    paddingSlider.addEventListener('input', (event) => {
+      const paddingValue = (event.target as HTMLInputElement).value + 'rem';
+      (mainEditor as HTMLInputElement).style.paddingLeft = paddingValue;
+      (mainEditor as HTMLInputElement).style.paddingRight = paddingValue;
+    });
+
+    lineSpacingSlider.addEventListener('input', (event) => {
+        const value = (event.target as HTMLInputElement).value;
+        document.documentElement.style.setProperty('--line-spacing', value);
+    });
+
+    textSizeSlider.addEventListener('input', (event) => {
+        const value = (event.target as HTMLInputElement).value;
+        document.documentElement.style.setProperty('--text-size', `${value}rem`);
+    });
+
 });
 
