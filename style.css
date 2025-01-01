@@ -57,7 +57,7 @@ table {
     outline: none;
     box-shadow: none;
     padding: calc(var(--base-spacing) * 5); /* Huge left-right padding */
-    font-size: calc(2.2 * var(--text-size)); /* Use text size variable */
+    font-size: calc(var(--text-size)); /* Use text size variable */
     line-height: var(--line-spacing); /* Use line spacing variable */
     font-family: Georgia, 'Times New Roman', Times, serif;
     overflow-x: hidden; /* Prevent horizontal overflow */
