@@ -172,6 +172,41 @@ table {
     transform: translateY(-60%); /* Slide out only half as much */
 }
 
+.settings-tab {
+    width: 4.375rem; /* 70px to rem */
+    height: 4.375rem; /* 70px to rem */
+    border-radius: 50%;
+    margin-right: calc(var(--base-spacing) * 1);
+    transition: transform 0.3s ease;
+    transform: translateY(-80%); /* Only 20% of the circle should show on screen in inactive mode */
+    cursor: pointer;
+    display: flex; /* Ensure the cog tab button is visible by default */
+    justify-content: center;
+    align-items: center;
+    background-color: gray;
+    color: white;
+    font-size: 2rem;
+}
+
+.settings-tab:hover {
+    transform: translateY(-60%); /* Slide out only half as much */
+}
+
+#settings-view {
+    visibility: hidden; /* Hidden by default */
+    position: fixed;
+    top: 10%;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 #citation-view {
     width: 100%;
     height: 100vh;
@@ -324,3 +359,4 @@ input[type="range"]::-ms-thumb {
     background: gray;
     border-radius: 50%;
 }
+#colortab-holder{display:flex;}

@@ -60,6 +60,9 @@ var lineSpacingSlider:HTMLInputElement | null = null;
 var textSizeSlider:HTMLInputElement | null = null;
 var paddingSlider:HTMLInputElement | null = null;
 
+var settingsView: HTMLElement | null = null;
+var settingsTab: HTMLElement | null = null;
+
 let typingTimeout: number | undefined;
 
 // set editor contents to colorpadDoc body
@@ -335,8 +338,11 @@ function isColorUsed(colorId: number): boolean {
 // render the colored tab navigation when updates are needed
 function createTabNavigation(colors: Color[]) {
     console.log('Creating tab navigation with colors:', colors);
+    const colorTabHolder = document.createElement('div');
+    colorTabHolder.id = 'colortab-holder';
     if (tabContainer) {
         tabContainer.innerHTML = ''; // Clear existing content
+        tabContainer.appendChild(colorTabHolder); // Add the color tab holder
 
         colors.forEach(color => {
             if (isColorUsed(color.id)) { // Only create tab if color is used
@@ -348,9 +354,12 @@ function createTabNavigation(colors: Color[]) {
                     displayCitationView(color);
                 });
 
-                tabContainer?.appendChild(tab);
+                colorTabHolder.appendChild(tab);
             }
         });
+
+        // Ensure the settings tab is always the last element
+       if(settingsTab) tabContainer.appendChild(settingsTab);
     } else {
         console.error('Tab container element not found');
     }
@@ -373,6 +382,26 @@ function updateSliderVisibility() {
     }
 }
 
+// Function to toggle the visibility of the settings view
+function toggleSettingsView() {
+    if (settingsView) {
+        if (settingsView.style.display === 'none' || settingsView.style.display === '') {
+            settingsView.style.display = 'block';
+            settingsView.style.visibility = 'visible';
+        } else {
+            settingsView.style.display = 'none';
+            settingsView.style.visibility = 'hidden';
+        }
+    }
+}
+
+// Function to toggle pinning of sliders
+function togglePinning(settingKey: keyof ColorpadDoc['settings']) {
+    colorpadDoc.settings[settingKey] = !colorpadDoc.settings[settingKey];
+    saveColorpadDoc();
+    updateSliderVisibility();
+}
+
 //DOM LOAD:
 document.addEventListener('DOMContentLoaded',async () => {
     
@@ -387,6 +416,16 @@ document.addEventListener('DOMContentLoaded',async () => {
     textSizeSlider = document.getElementById('text-size-slider') as HTMLInputElement;
     paddingSlider = document.getElementById('padding-slider') as HTMLInputElement;
 
+    settingsView = document.getElementById('settings-view');
+    settingsTab = document.getElementById('settings-tab');
+
+    settingsTab?.addEventListener('click', toggleSettingsView);
+
+    document.getElementById('pin-line-spacing')?.addEventListener('click', () => togglePinning('pinnedLineSpacing'));
+    document.getElementById('pin-text-size')?.addEventListener('click', () => togglePinning('pinnedTextSize'));
+    document.getElementById('pin-padding')?.addEventListener('click', () => togglePinning('pinnedPadding'));
+
+    updateSliderVisibility();
     
     closeCitations?.addEventListener('click', hideCitationView);
 
