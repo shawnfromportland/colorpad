@@ -33,6 +33,8 @@
 
   </div>
 
+  <div id="gutter-lines"></div>
+
   <div id="maineditor" contenteditable="true"></div>
 
   <div id="citation-view"></div>
@@ -41,7 +43,32 @@
 
 
   <script type="module" src="./src/main.ts"></script>
+  <script>
+    const paddingSlider = document.getElementById('padding-slider');
+    const gutterLines = document.getElementById('gutter-lines');
 
+    paddingSlider.addEventListener('input', (event) => {
+      const paddingValue = event.target.value + 'rem';
+      const mainEditor = document.getElementById('maineditor');
+      mainEditor.style.paddingLeft = paddingValue;
+      mainEditor.style.paddingRight = paddingValue;
+      const citationView = document.getElementById('citation-view');
+      citationView.style.paddingLeft = paddingValue;
+      citationView.style.paddingRight = paddingValue;
+
+      // Show gutter lines
+      gutterLines.style.display = 'block';
+      gutterLines.innerHTML = `
+        <div class="gutter-line" style="left: ${paddingValue};"></div>
+        <div class="gutter-line" style="right: ${paddingValue};"></div>
+      `;
+    });
+
+    paddingSlider.addEventListener('change', () => {
+      // Hide gutter lines
+      gutterLines.style.display = 'none';
+    });
+  </script>
 
 </body>
 

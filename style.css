@@ -216,3 +216,21 @@ table {
     display: block; /* Ensure it is displayed when citation view is visible */
 }
 
+#gutter-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: none;
+}
+
+.gutter-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: lightgray;
+}
+
