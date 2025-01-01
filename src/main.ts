@@ -238,6 +238,7 @@ function reactivityUpdates(){
 function displayCitationView(color: Color) {
     const citationView = document.getElementById('citation-view');
     const mainEditor = document.getElementById('maineditor');
+    const closeCitations = document.getElementById('close-citations');
 
     if (citationView && mainEditor) {
         citationView.innerHTML = ''; // Clear existing content
@@ -250,13 +251,18 @@ function displayCitationView(color: Color) {
             const citationSpan = document.createElement('span');
             citationSpan.className = 'citation-highlight';
             citationSpan.textContent = span.textContent;
+            // citationSpan.setAttribute('data-color-id', `${color.id}`);
             citationView.appendChild(citationSpan);
         });
 
         mainEditor.style.visibility = 'hidden';
         mainEditor.style.display = 'none';
+        citationView.classList.add('visible');
         citationView.style.visibility = 'visible';
-        citationView.style.display = 'default';
+        mainEditor.style.visibility = 'visible';
+        citationView.style.display = 'block';
+       
+        (closeCitations as HTMLElement).style.display = 'block';
     }
 }
 
@@ -264,12 +270,13 @@ function displayCitationView(color: Color) {
 function hideCitationView() {
     const citationView = document.getElementById('citation-view');
     const mainEditor = document.getElementById('maineditor');
+    const closeCitations = document.getElementById('close-citations');
 
-    if (citationView && mainEditor) {
-        citationView.style.visibility = 'hidden';
-        citationView.style.display = 'none';
+    if (citationView && mainEditor && closeCitations) {
+        citationView.classList.remove('visible');
         mainEditor.style.visibility = 'visible';
-        mainEditor.style.display = 'default';
+        mainEditor.style.display = 'block';
+        closeCitations.style.display = 'none';
     }
 }
 
@@ -317,6 +324,8 @@ document.addEventListener('DOMContentLoaded',async () => {
     contextMenu = document.getElementById('hovermenu');
     mainEditor = document.getElementById('maineditor');
     tabContainer = document.getElementById('tab-navigation');
+    const closeCitations = document.getElementById('close-citations');
+    closeCitations?.addEventListener('click', hideCitationView);
     // Check if colorpadDoc exists in localForage, if not, create it
     await localforage.getItem<ColorpadDoc>('colorpadDoc').then(async (storedDoc) => {
         if (!storedDoc) {
@@ -410,6 +419,9 @@ document.addEventListener('DOMContentLoaded',async () => {
       const paddingValue = (event.target as HTMLInputElement).value + 'rem';
       (mainEditor as HTMLInputElement).style.paddingLeft = paddingValue;
       (mainEditor as HTMLInputElement).style.paddingRight = paddingValue;
+      const citationView = document.getElementById('citation-view') as HTMLInputElement;
+      citationView.style.paddingLeft = paddingValue;
+      citationView.style.paddingRight = paddingValue;
     });
 
     lineSpacingSlider.addEventListener('input', (event) => {
