@@ -1,8 +1,8 @@
 :root {
     --base-spacing: 1rem; /* Base spacing variable */
-    --line-spacing: 1.8; /* Line spacing variable */
-    --text-size: 1rem; /* Text size variable */
-    --margins: 5rem; /* Text size variable */
+    --line-spacing: 1.9; /* Line spacing variable */
+    --text-size: 2.1rem; /* Text size variable */
+    --margins: 14rem; /* Text size variable */
 }
 
 /* Reset CSS */

@@ -45,9 +45,9 @@ const colorpadDoc: ColorpadDoc = {
     ],
     settings: {
       theme: "dark",
-      fontSize: 1.4,
-      lineHeight: 1.5,
-      margins: 2,
+      fontSize: 2.1,
+      lineHeight: 1.9,
+      margins: 14,
       pinnedLineSpacing: true,
       pinnedTextSize: true,
       pinnedPadding: true
@@ -579,6 +579,14 @@ function togglePinCopyAllJson() {
     saveColorpadDoc();
 }
 
+// Add event listener to hide citation view when clicking outside
+document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement;
+    if (citationView?.classList.contains('visible') && !target.closest('.citation-highlight') && !target.closest('#citation-view') && !target.closest('input[type="range"]')) {
+        hideCitationView();
+    }
+});
+
 //DOM LOAD:
 document.addEventListener('DOMContentLoaded',async () => {
     
@@ -695,7 +703,7 @@ document.addEventListener('DOMContentLoaded',async () => {
         }
         
         console.log('testing citationview click ');
-        if ( !target.closest('.citation-highlight')) {
+        if ( !target.closest('.citation-highlight') && !target.closest('#sliders') ) {
             console.log('hiding citation view ');
             hideCitationView();
         }
