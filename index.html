@@ -59,8 +59,8 @@
       // Show gutter lines
       gutterLines.style.display = 'block';
       gutterLines.innerHTML = `
-        <div class="gutter-line" style="left: ${paddingValue};"></div>
-        <div class="gutter-line" style="right: ${paddingValue};"></div>
+        <div class="gutter-line" style="left: calc(${paddingValue} - 5*var(--base-spacing));"></div>
+        <div class="gutter-line" style="right: calc(${paddingValue} - 5*var(--base-spacing));"></div>
       `;
     });
 
