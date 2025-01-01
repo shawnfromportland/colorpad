@@ -20,32 +20,32 @@ type ColorpadDoc = {
 const colorDefinitions: Color[] = [
     {
         id: 1,
-        value: '#fafafa',
-        name: 'Seasalt',
+        value: '#003049',
+        name: 'Prussian blue',
         order: 1
     },
     {
         id: 2,
-        value: '#f2f2f2',
-        name: 'White smoke',
+        value: '#d62828',
+        name: 'Fire engine red',
         order: 2
     },
     {
         id: 3,
-        value: '#ececec',
-        name: 'Anti-flash white',
+        value: '#f77f00',
+        name: 'Orange (wheel)',
         order: 3
     },
     {
         id: 4,
-        value: '#e8e8e8',
-        name: 'Platinum',
+        value: '#fcbf49',
+        name: 'Xanthous',
         order: 4
     },
     {
         id: 5,
-        value: '#ff867f',
-        name: 'Coral pink',
+        value: '#eae2b7',
+        name: 'Vanilla',
         order: 5
     }
 ];
@@ -203,7 +203,7 @@ function populateContextMenu(colorDefinitions:Color[]) {
 
 // Function to save colorpadDoc to localforage
 async function saveColorpadDoc(): Promise<void> {
-    syncEditorToDoc(); // Sync editor content before saving
+    // syncEditorToDoc(); // Sync editor content before saving
     try {
         const resultingColorpadDoc = await localforage.setItem('colorpadDoc', colorpadDoc);
         // This code runs once the value has been loaded

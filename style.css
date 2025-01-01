@@ -57,6 +57,22 @@ table {
     font-family: Georgia, 'Times New Roman', Times, serif;
     overflow-x: hidden; /* Prevent horizontal overflow */
     box-sizing: border-box; /* Include padding in width calculation */
+    position: relative;
+    z-index: 1;
+    
+}
+
+#maineditor::before, #citation-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/cotton-texture.webp');
+    background-size: cover;
+    opacity: 0.6;
+    z-index: -1;
 }
 
 .highlighted {
@@ -152,7 +168,6 @@ table {
 
 #citation-view {
     width: 100%;
-   
     height: 100vh;
     background-color: white;
     visibility: hidden;
@@ -161,7 +176,6 @@ table {
     box-sizing: border-box;
     margin-left: auto;
     margin-right: auto;
-    display: flex;
     flex-direction: column;
     align-items: center;
     align-self: center;
