@@ -67,6 +67,29 @@ table {
     
 }
 
+#citation-view {
+    width: 100%;
+    height: 100vh;
+    visibility: hidden;
+    overflow: auto;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    position: absolute; /* Ensure it is positioned over the main editor */
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    z-index: 2; /* Ensure it is above the main editor */
+}
+
+#citation-view.visible {
+    display: block; /* Ensure it is displayed when visible */
+    visibility: visible;
+}
+
 #citation-view::before {
     content: '';
     position: absolute;
@@ -207,25 +230,6 @@ table {
     gap: 1rem;
 }
 
-#citation-view {
-    width: 100%;
-    height: 100vh;
-    visibility: hidden;
-    display: none; /* Ensure it is hidden by default */
-    overflow: auto;
-    box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-    flex-direction: column;
-    align-items: center;
-    align-self: center;
-    position: relative; /* Ensure it is positioned relative to its container */
-}
-
-#citation-view.visible {
-    display: flex; /* Ensure it is displayed when visible */
-}
-
 .citation-highlight {
     border: 0.125rem dashed #000; /* 2px to rem */
     backdrop-filter: blur(0px); 
@@ -240,22 +244,7 @@ table {
     background-color: white; /* Ensure background color is set */
     font-size: var(--text-size); /* Use text size variable */
     line-height: var(--line-spacing); /* Use line spacing variable */
-}
-
-#close-citations {
-    display: none; /* Ensure it is hidden by default */
-    padding: calc(var(--base-spacing) * 0.5);
-    cursor: pointer;
-    font-size: 4rem;
-    position: absolute; /* Position it absolutely within the citation view */
-    top: 0; /* Align it to the top */
-    left: 50%; /* Center it horizontally */
-    transform: translateX(-50%); /* Adjust for the element's width */
-    z-index: 999;
-}
-
-#citation-view.visible + #close-citations {
-    display: block; /* Ensure it is displayed when citation view is visible */
+    cursor: pointer; /* Make the citation highlight act as a button */
 }
 
 #gutter-lines {
@@ -276,12 +265,44 @@ table {
     width: 2px;
     background-color: var(--color-1);
 }
-
-.copy-button{
-    padding: calc(var(--base-spacing) * 4);
+.copy-button {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: calc(var(--base-spacing) * 0.5);
+    padding: calc(var(--base-spacing) * 0.5);
+    padding-top: 2px;
     border: 1px solid gray;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    text-align: center;
+    line-height: 1.5rem;
+    font-size: calc(var(--base-spacing));
+    cursor: pointer;
 }
-.goto-button{
+
+.copy-button:hover {
+    background-color: lightgray;
+}
+
+.copy-notification {
+    position: absolute;
+    background-color: #000;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.7s ease-out;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.copy-notification.visible {
+    opacity: 1;
+}
+
+.goto-button {
     border: 1px solid gray;
     padding: calc(var(--base-spacing) * 4);
 }
@@ -364,4 +385,30 @@ input[type="range"]::-ms-thumb {
     /*mostly transparent white background witha blur 0.4 filter applied */
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(calc(var(--base-spacing)/8));
+}
+
+#color-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: calc(var(--base-spacing) * 2);
+    /*blur 0*/
+    backdrop-filter: blur(0);
+}
+
+#color-circle {
+    width: calc(var(--base-spacing) * 4);;
+    height: calc(var(--base-spacing) * 4);;
+    border-radius: 50%;
+    margin-right: calc(var(--base-spacing) * 1);
+}
+
+#color-name-input {
+    font-size: calc(var(--text-size)*2);
+    font-weight:bolder;
+    line-height: 2rem;
+    padding: 1rem;
+    padding-left: calc(var(--base-spacing) * 1.5);
+    border: 1px solid gray;
+    border-radius: 0.25rem;
 }

@@ -53,7 +53,6 @@ const colorpadDoc: ColorpadDoc = {
 var contextMenu:HTMLElement|null = null;
 var mainEditor:HTMLElement|null = null;
 var tabContainer:HTMLElement|null = null;
-var closeCitations:HTMLElement|null = null;
 
 var citationView:HTMLElement|null = null;
 var lineSpacingSlider:HTMLInputElement | null = null;
@@ -272,15 +271,57 @@ function reactivityUpdates(){
     
 }
 
+// Function to show copy notification
+function showCopyNotification(event: MouseEvent) {
+    const notification = document.createElement('div');
+    notification.className = 'copy-notification';
+    notification.textContent = 'Text copied!';
+    document.body.appendChild(notification);
+
+    const { clientX: x, clientY: y } = event;
+    notification.style.left = `${x}px`;
+    notification.style.top = `${y}px`;
+
+    requestAnimationFrame(() => {
+        notification.classList.add('visible');
+    });
+
+    setTimeout(() => {
+        notification.classList.remove('visible');
+        setTimeout(() => {
+            notification.remove();
+        }, 500);
+    }, 500);
+}
+
 // display citation view
 function displayCitationView(color: Color) {
     console.log('Displaying citation view for color:', color);
-    const citationView = document.getElementById('citation-view');
-    const mainEditor = document.getElementById('maineditor');
-    const closeCitations = document.getElementById('close-citations');
-
-    if (citationView && mainEditor) {
+    mainEditor = document.getElementById('maineditor');
+    citationView = document.getElementById('citation-view');
+    
+    if (citationView instanceof HTMLElement && mainEditor) {
         citationView.innerHTML = ''; // Clear existing content
+
+        // Add color info section
+        const colorInfo = document.createElement('div');
+        colorInfo.id = 'color-info';
+
+        const colorCircle = document.createElement('div');
+        colorCircle.id = 'color-circle';
+        colorCircle.style.backgroundColor = color.value;
+
+        const colorNameInput = document.createElement('input');
+        colorNameInput.id = 'color-name-input';
+        colorNameInput.value = color.name;
+        colorNameInput.addEventListener('input', (event) => {
+            color.name = (event.target as HTMLInputElement).value;
+            saveColorpadDoc();
+        });
+
+        colorInfo.appendChild(colorCircle);
+        colorInfo.appendChild(colorNameInput);
+        citationView.appendChild(colorInfo);
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(mainEditor.innerHTML, 'text/html');
@@ -294,43 +335,36 @@ function displayCitationView(color: Color) {
             // Create copy button
             const copyButton = document.createElement('button');
             copyButton.classList.add('copy-button');
-            copyButton.textContent = 'Copy';
+            copyButton.textContent = '📄';
             copyButton.addEventListener('click', (event) => {
                 event.stopPropagation(); // Prevent event propagation
                 navigator.clipboard.writeText(span.textContent || '');
                 console.log('Copied text:', span.textContent);
+                showCopyNotification(event);
             });
 
-            // Create go to button
-            const goToButton = document.createElement('button');
-            goToButton.classList.add('goto-button');
-            goToButton.textContent = 'Go to';
-            goToButton.addEventListener('click', () => {
+            // Append the copy button to the citation span
+            citationSpan.appendChild(copyButton);
+
+            // Add event listener to scroll to the original span when clicked
+            citationSpan.addEventListener('click', () => {
+                console.log('Scrolling to original span');
                 hideCitationView();
-                const originalSpan = mainEditor.querySelector(`span[data-color-id="${color.id}"]`);
+                const originalSpan = mainEditor?.querySelector(`span[data-color-id="${color.id}"]`);
                 if (originalSpan) {
                     originalSpan.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
-
-            // Append buttons to the citation span
-            citationSpan.appendChild(copyButton);
-            citationSpan.appendChild(goToButton);
-
-            citationView.appendChild(citationSpan);
+            
+            citationView?.appendChild(citationSpan);
+            
         });
-
-        mainEditor.style.visibility = 'hidden';
-        mainEditor.style.display = 'none';
-        citationView.classList.add('visible');
-        citationView.style.visibility = 'visible';
-        citationView.style.display = 'block';
-       
-        if (closeCitations) {
-            closeCitations.style.display = 'block';
-        } else {
-            console.error('Close citations element not found');
-        }
+        
+        console.log('making citationview visible!');
+        requestAnimationFrame(() => {
+            citationView?.classList.add('visible');
+        });
+        console.log('citationview classlist', citationView.classList);
     } else {
         console.error('Citation view or main editor element not found');
     }
@@ -338,15 +372,8 @@ function displayCitationView(color: Color) {
 
 // hide citation view
 function hideCitationView() {
-    const citationView = document.getElementById('citation-view');
-    const mainEditor = document.getElementById('maineditor');
-    const closeCitations = document.getElementById('close-citations');
-
-    if (citationView && mainEditor && closeCitations) {
+    if (citationView) {
         citationView.classList.remove('visible');
-        mainEditor.style.visibility = 'visible';
-        mainEditor.style.display = 'block';
-        closeCitations.style.display = 'none';
     }
 }
 
@@ -465,9 +492,8 @@ document.addEventListener('DOMContentLoaded',async () => {
     contextMenu = document.getElementById('hovermenu');
     mainEditor = document.getElementById('maineditor');
     tabContainer = document.getElementById('tab-navigation');
-    closeCitations = document.getElementById('close-citations');
 
-    citationView = document.getElementById('citation-view') as HTMLElement;
+    citationView = document.getElementById('citation-view');
     lineSpacingSlider = document.getElementById('line-spacing-slider') as HTMLInputElement;
     textSizeSlider = document.getElementById('text-size-slider') as HTMLInputElement;
     paddingSlider = document.getElementById('padding-slider') as HTMLInputElement;
@@ -483,7 +509,6 @@ document.addEventListener('DOMContentLoaded',async () => {
 
     updateSliderVisibility();
     
-    closeCitations?.addEventListener('click', hideCitationView);
 
     // Check if colorpadDoc exists in localForage, if not, create it
     // with data loaded, update the UI
@@ -576,17 +601,21 @@ document.addEventListener('DOMContentLoaded',async () => {
         }
     });
 
-    // Add event listener to hide context menu when clicking close button
-    citationView?.addEventListener('click', hideCitationView);
+    // Add event listener to hide citation view when clicking outside
+    document.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.citation-highlight') && !target.closest('#citation-view')) {
+            hideCitationView();
+        }
+    });
 
     // padding slider event listener
     paddingSlider.addEventListener('input', (event) => {
       const paddingValue = (event.target as HTMLInputElement).value + 'rem';
       (mainEditor as HTMLInputElement).style.paddingLeft = paddingValue;
       (mainEditor as HTMLInputElement).style.paddingRight = paddingValue;
-      const citationView = document.getElementById('citation-view') as HTMLInputElement;
-      citationView.style.paddingLeft = paddingValue;
-      citationView.style.paddingRight = paddingValue;
+      (citationView as HTMLElement).style.paddingLeft = paddingValue;
+      (citationView as HTMLElement).style.paddingRight = paddingValue;
     });
 
     // line spacing slider event listener
@@ -626,9 +655,8 @@ document.addEventListener('DOMContentLoaded',async () => {
         const paddingValue = (event.target as HTMLInputElement).value + 'rem';
         mainEditor!.style.paddingLeft = paddingValue;
         mainEditor!.style.paddingRight = paddingValue;
-        const citationView = document.getElementById('citation-view') as HTMLInputElement;
-        citationView.style.paddingLeft = paddingValue;
-        citationView.style.paddingRight = paddingValue;
+        (citationView as HTMLElement).style.paddingLeft = paddingValue;
+        (citationView as HTMLElement).style.paddingRight = paddingValue;
         paddingSlider!.value = (event.target as HTMLInputElement).value; // Sync with pinned slider
         colorpadDoc.settings.margins = parseFloat((event.target as HTMLInputElement).value);
         saveColorpadDoc();
