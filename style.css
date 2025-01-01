@@ -128,7 +128,8 @@ table {
 
 
 #tab-navigation {
-    position: absolute;
+    position: fixed; /* Change to fixed */
+    z-index: 1000; /* Ensure it stays on top of everything */
     top: 0; /* Hide more of the dots off the top of the viewport */
     right: 0; /* Align to the right */
     text-align: end;
@@ -150,4 +151,30 @@ table {
   .color-tab:hover {
     transform: translateY(-60%); /* Slide out only half as much */
   }
-  
+
+#citation-view {
+   
+    width: 100%;
+    max-width: 800px;
+    height: 100vh;
+    padding: 50px;
+    background-color: white;
+    visibility: hidden;
+    overflow: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-left:auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.citation-highlight {
+    border: 2px dashed #000;
+    padding: 5px;
+    margin-bottom: 10px;
+    display: block;
+    width: 80%; /* Adjust width as needed */
+    text-align: center;
+}

@@ -58,38 +58,20 @@ const colorpadDoc: ColorpadDoc = {
 //localForge Here
 async function updateEditor(): Promise<void> {
     if (mainEditor ) {
+        console.log('updateEditor');
         mainEditor.innerHTML = colorpadDoc.body; // Use innerHTML to render HTML tags
     }
 }
 
 // Function to sync mainEditor content with colorpadDoc body
 function syncEditorToDoc() {
+    console.log('syncEditorToDoc');
     if (mainEditor) {
         colorpadDoc.body = mainEditor.innerHTML;
     }
 }
 
-// Check if colorpadDoc exists in localForage, if not, create it
-localforage.getItem<ColorpadDoc>('colorpadDoc').then((storedDoc) => {
-    if (!storedDoc) {
-        // If no document exists, save the default colorpadDoc
-        localforage.setItem('colorpadDoc', colorpadDoc).then(() => {
-            console.log('New colorpadDoc saved');
-        }).catch((err) => {
-            console.error('Error saving colorpadDoc:', err);
-        });
-    } else {
-        // If colorpadDoc exists, use the stored version
-        console.log('Loaded colorpadDoc:', storedDoc);
-        // You can update your app's state here with the loaded document
-        colorpadDoc.body = storedDoc.body;
-        colorpadDoc.colors = storedDoc.colors;
-        colorpadDoc.settings = storedDoc.settings;
-    }
-    updateEditor();
-}).catch((err) => {
-    console.error('Error reading colorpadDoc:', err);
-});
+
 
 // Function to generate and update CSS rules
 function updateDynamicStyles(colors:Color[]) {
@@ -228,44 +210,134 @@ async function saveColorpadDoc(): Promise<void> {
 function reactivityUpdates(){
     
     //initial update
+    updateEditor();
     updateDynamicStyles(colorpadDoc.colors);
     populateContextMenu(colorpadDoc.colors);
     createTabNavigation(colorpadDoc.colors); // Add this line
+    
 }
 
+// Function to extract distinct colors from the text
+// function extractColorsFromText(text: string): Color[] {
+//     const parser = new DOMParser();
+//     const doc = parser.parseFromString(text, 'text/html');
+//     const spans = doc.querySelectorAll('span[data-color-id]');
+//     const colorIds = new Set<string>();
+
+//     spans.forEach(span => {
+//         const colorId = span.getAttribute('data-color-id');
+//         if (colorId) {
+//             colorIds.add(colorId);
+//         }
+//     });
+
+//     return Array.from(colorIds).map(id => colorpadDoc.colors.find(color => color.id.toString() === id)!);
+// }
+
+// Function to display citation view
+function displayCitationView(color: Color) {
+    const citationView = document.getElementById('citation-view');
+    const mainEditor = document.getElementById('maineditor');
+
+    if (citationView && mainEditor) {
+        citationView.innerHTML = ''; // Clear existing content
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(mainEditor.innerHTML, 'text/html');
+        const spans = doc.querySelectorAll(`span[data-color-id="${color.id}"]`);
+
+        spans.forEach(span => {
+            const citationSpan = document.createElement('span');
+            citationSpan.className = 'citation-highlight';
+            citationSpan.textContent = span.textContent;
+            citationView.appendChild(citationSpan);
+        });
+
+        mainEditor.style.visibility = 'hidden';
+        mainEditor.style.display = 'none';
+        citationView.style.visibility = 'visible';
+        citationView.style.display = 'default';
+    }
+}
+
+// Function to hide citation view
+function hideCitationView() {
+    const citationView = document.getElementById('citation-view');
+    const mainEditor = document.getElementById('maineditor');
+
+    if (citationView && mainEditor) {
+        citationView.style.visibility = 'hidden';
+        citationView.style.display = 'none';
+        mainEditor.style.visibility = 'visible';
+        mainEditor.style.display = 'default';
+    }
+}
+
+// Function to check if a color is used in the document
+function isColorUsed(colorId: number): boolean {
+   
+    if (mainEditor) {
+        //console.log('colorpadDoc.body', colorpadDoc.body);
+        // search colorpadDoc.body for matching spans:
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(colorpadDoc.body, 'text/html');
+        const spans = doc.querySelectorAll(`span[data-color-id="${colorId}"]`);
+
+        // const spans = mainEditor?.querySelectorAll(`span[data-color-id="${colorId}"]`) || [];
+        // console.log('spans',spans);
+        return spans.length > 0;
+    }
+    return false;
+}
+
+// Modify createTabNavigation to add click event for displaying citation view
 function createTabNavigation(colors: Color[]) {
     if (tabContainer) {
         tabContainer.innerHTML = ''; // Clear existing content
 
         colors.forEach(color => {
-            const tab = document.createElement('div');
-            tab.className = 'color-tab';
-            tab.style.backgroundColor = `var(--color-${color.id})`;
-            
+            if (isColorUsed(color.id)) { // Only create tab if color is used
+                const tab = document.createElement('div');
+                tab.className = 'color-tab';
+                tab.style.backgroundColor = `var(--color-${color.id})`;
 
-            // tab.addEventListener('mouseenter', () => {
-            //     tab.style.transform = 'translateY(0)';
-            // });
+                tab.addEventListener('click', () => {
+                    displayCitationView(color);
+                });
 
-            // tab.addEventListener('mouseleave', () => {
-            //     tab.style.transform = 'translateY(-50%)';
-            // });
-
-            tab.addEventListener('click', () => {
-                console.log(`Clicked color: ${color.name}`);
-            });
-
-            tabContainer?.appendChild(tab);
+                tabContainer?.appendChild(tab);
+            }
         });
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded',async () => {
+    
 
     contextMenu = document.getElementById('hovermenu');
     mainEditor = document.getElementById('maineditor');
     tabContainer = document.getElementById('tab-navigation');
-    reactivityUpdates();
+    // Check if colorpadDoc exists in localForage, if not, create it
+    await localforage.getItem<ColorpadDoc>('colorpadDoc').then(async (storedDoc) => {
+        if (!storedDoc) {
+            console.log('No colorpadDoc found, creating a new one:', colorpadDoc);
+            await saveColorpadDoc(); // Save the default colorpadDoc
+        } else {
+            // If colorpadDoc exists, use the stored version
+            console.log('Loaded colorpadDoc:', storedDoc);
+            // You can update your app's state here with the loaded document
+            colorpadDoc.body = storedDoc.body;
+            colorpadDoc.colors = storedDoc.colors;
+            colorpadDoc.settings = storedDoc.settings;
+        }
+    }).catch((err) => {
+        console.error('Error reading colorpadDoc:', err);
+    })
+    .then(() => {
+        reactivityUpdates();
+    });
+
+    
 
     mainEditor?.addEventListener('mouseup', function (event) {
         const selection = window.getSelection();
@@ -325,6 +397,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const citationView = document.createElement('div');
+    citationView.id = 'citation-view';
+
+    citationView.addEventListener('click', hideCitationView);
 
 });
 
