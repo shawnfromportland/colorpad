@@ -134,8 +134,8 @@ function updateDynamicStyles(colors:Color[]) {
     document.head.appendChild(styleElement);
 }
 
-// Function to invert a color and adjust its brightness
-function invertColor(hex: string, bw: boolean): string {
+// Function to adjust text color based on background brightness
+function adjustTextColor(hex: string): string {
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
     }
@@ -149,16 +149,20 @@ function invertColor(hex: string, bw: boolean): string {
     const r = parseInt(hex.slice(0, 2), 16),
           g = parseInt(hex.slice(2, 4), 16),
           b = parseInt(hex.slice(4, 6), 16);
-    if (bw) {
-        // If brightness is needed, calculate the brightness and adjust
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        return brightness > 128 ? '#000000' : '#FFFFFF';
-    }
+    // Calculate brightness
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
     // Invert color components
-    const invertedR = (255 - r).toString(16).padStart(2, '0'),
-          invertedG = (255 - g).toString(16).padStart(2, '0'),
-          invertedB = (255 - b).toString(16).padStart(2, '0');
-    return `#${invertedR}${invertedG}${invertedB}`;
+    const invertedR = (255 - r),
+          invertedG = (255 - g),
+          invertedB = (255 - b);
+    // Adjust text color based on brightness
+    if (brightness > 128) {
+        // Subdued shade for lighter backgrounds
+        return `rgb(${Math.floor(invertedR * 0.7)}, ${Math.floor(invertedG * 0.7)}, ${Math.floor(invertedB * 0.7)})`;
+    } else {
+        // Pastel shade for darker backgrounds
+        return `rgb(${Math.floor(invertedR + (255 - invertedR) * 0.5)}, ${Math.floor(invertedG + (255 - invertedG) * 0.5)}, ${Math.floor(invertedB + (255 - invertedB) * 0.5)})`;
+    }
 }
 
 // highlight current text selection with color
@@ -210,9 +214,9 @@ function highlightText(color: Color) {
                 .replace(/^ /, '\u00A0') // Replace leading space with non-breaking space
                 .replace(/ $/, '\u00A0'); // Replace trailing space with non-breaking space
 
-            // Set the background color and calculate the inverted text color
+            // Set the background color and calculate the adjusted text color
             wrapper.style.backgroundColor = color.value;
-            wrapper.style.color = invertColor(color.value, false);
+            wrapper.style.color = adjustTextColor(color.value);
 
             // Replace the selected range with the <span>
             range.deleteContents();
@@ -432,6 +436,8 @@ function createTabNavigation(colors: Color[]) {
         colors.forEach(color => {
             if (isColorUsed(color.id)) { // Only create tab if color is used
                 const tab = document.createElement('div');
+                //add alt text for color.name
+                tab.title = color.name;
                 tab.className = 'color-tab';
                 tab.style.backgroundColor = `var(--color-${color.id})`;
 
@@ -555,6 +561,21 @@ function copyAllHighlightsToJson(event: MouseEvent) {
     navigator.clipboard.writeText(JSON.stringify(jsonData, null, 2));
     console.log('Copied All Highlights JSON:', jsonData);
     showCopyNotification(event, 'All Highlights JSON copied!');
+}
+
+// Function to toggle pinning of the copy-all-json button
+function togglePinCopyAllJson() {
+    const copyAllJsonButton = document.getElementById('copy-all-json-button');
+    const settingsCopyAllJsonButton = document.getElementById('settings-copy-all-json-button');
+    const isPinned = copyAllJsonButton?.style.display !== 'none';
+
+    if (isPinned) {
+        copyAllJsonButton!.style.display = 'none';
+    } else {
+        copyAllJsonButton!.style.display = 'block';
+    }
+
+    saveColorpadDoc();
 }
 
 //DOM LOAD:
@@ -744,7 +765,19 @@ document.addEventListener('DOMContentLoaded',async () => {
     });
 
     const copyAllJsonButton = document.getElementById('copy-all-json-button');
+    const settingsCopyAllJsonButton = document.getElementById('settings-copy-all-json-button');
+    const pinCopyAllJsonButton = document.getElementById('pin-copy-all-json');
+
     copyAllJsonButton?.addEventListener('click', copyAllHighlightsToJson);
+    settingsCopyAllJsonButton?.addEventListener('click', copyAllHighlightsToJson);
+    pinCopyAllJsonButton?.addEventListener('click', togglePinCopyAllJson);
+
+    // Initialize the visibility of the copy-all-json button based on settings
+    if (colorpadDoc.settings.pinnedCopyAllJson) {
+        copyAllJsonButton!.style.display = 'block';
+    } else {
+        copyAllJsonButton!.style.display = 'none';
+    }
 
     updateSliderVisibility();
 });
