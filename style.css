@@ -1,7 +1,7 @@
 :root {
     --base-spacing: 1rem; /* Base spacing variable */
-    --line-spacing: 1.25; /* Line spacing variable */
-    --text-size: 2rem; /* Text size variable */
+    --line-spacing: 1.8; /* Line spacing variable */
+    --text-size: 1rem; /* Text size variable */
 }
 
 /* Reset CSS */
@@ -360,3 +360,8 @@ input[type="range"]::-ms-thumb {
     border-radius: 50%;
 }
 #colortab-holder{display:flex;}
+#removehilite{
+    /*mostly transparent white background witha blur 0.4 filter applied */
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(calc(var(--base-spacing)/8));
+}

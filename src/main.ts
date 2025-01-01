@@ -124,6 +124,33 @@ function updateDynamicStyles(colors:Color[]) {
     document.head.appendChild(styleElement);
 }
 
+// Function to invert a color and adjust its brightness
+function invertColor(hex: string, bw: boolean): string {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // Convert 3-digit hex to 6-digit hex
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    const r = parseInt(hex.slice(0, 2), 16),
+          g = parseInt(hex.slice(2, 4), 16),
+          b = parseInt(hex.slice(4, 6), 16);
+    if (bw) {
+        // If brightness is needed, calculate the brightness and adjust
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 128 ? '#000000' : '#FFFFFF';
+    }
+    // Invert color components
+    const invertedR = (255 - r).toString(16).padStart(2, '0'),
+          invertedG = (255 - g).toString(16).padStart(2, '0'),
+          invertedB = (255 - b).toString(16).padStart(2, '0');
+    return `#${invertedR}${invertedG}${invertedB}`;
+}
+
 // highlight current text selection with color
 function highlightText(color: Color) {
     console.log("highlighttext with color ", color);
@@ -173,6 +200,10 @@ function highlightText(color: Color) {
                 .replace(/^ /, '\u00A0') // Replace leading space with non-breaking space
                 .replace(/ $/, '\u00A0'); // Replace trailing space with non-breaking space
 
+            // Set the background color and calculate the inverted text color
+            wrapper.style.backgroundColor = color.value;
+            wrapper.style.color = invertColor(color.value, false);
+
             // Replace the selected range with the <span>
             range.deleteContents();
             console.log('After modification:', document.activeElement);
@@ -200,6 +231,7 @@ function populateContextMenu(colorDefinitions: Color[]) {
     const removeButton = document.createElement('span');
     removeButton.innerText = 'ⓧ';
     removeButton.className = 'highlightbutton';
+    removeButton.id='removehilite';
     removeButton.addEventListener('click', () => console.log('removehilite'));
     colormenu.appendChild(removeButton);
 
