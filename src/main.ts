@@ -69,9 +69,24 @@ const colorpadDoc: ColorpadDoc = {
 //localForge Here
 //localForge Here
 async function updateEditor(): Promise<void> {
-    if (mainEditor ) {
-        console.log('updateEditor');
+    if (mainEditor) {
+        const selection = window.getSelection();
+        let cursorPosition: number | undefined;
+        let range: Range | undefined;
+
+        if (selection && selection.rangeCount > 0) {
+            range = selection.getRangeAt(0);
+            cursorPosition = range.startOffset;
+        }
+
         mainEditor.innerHTML = colorpadDoc.body; // Use innerHTML to render HTML tags
+
+        if (cursorPosition !== undefined && selection && range) {
+            range.setStart(mainEditor.childNodes[0], cursorPosition);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
 }
 
@@ -203,7 +218,7 @@ function populateContextMenu(colorDefinitions:Color[]) {
 
 // Function to save colorpadDoc to localforage
 async function saveColorpadDoc(): Promise<void> {
-    // syncEditorToDoc(); // Sync editor content before saving
+    syncEditorToDoc(); // Sync editor content before saving
     try {
         const resultingColorpadDoc = await localforage.setItem('colorpadDoc', colorpadDoc);
         // This code runs once the value has been loaded
@@ -395,28 +410,10 @@ document.addEventListener('DOMContentLoaded',async () => {
         range.collapse(false);
         selection.removeAllRanges();
         selection.addRange(range);
-
+        syncEditorToDoc(); // Sync editor content after paste operation
         saveColorpadDoc(); // Save after paste operation
     });
 
-    document.addEventListener('paste', function (event) {
-        event.preventDefault();
-        // Get plain text from the clipboard
-        const plainText = event.clipboardData?.getData('text/plain');
-  
-        // Insert the plain text at the caret position
-        const selection = window.getSelection();
-        if (!selection?.rangeCount) return;
-  
-        const range = selection.getRangeAt(0);
-        range.deleteContents(); // Remove any selected content
-        range.insertNode(document.createTextNode(plainText??""));
-  
-        // Move the cursor to the end of the inserted text
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      });
 
     let typingTimeout: number | undefined;
     mainEditor?.addEventListener('input', function () {

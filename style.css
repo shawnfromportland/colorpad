@@ -1,6 +1,6 @@
 :root {
     --base-spacing: 1rem; /* Base spacing variable */
-    --line-spacing: 1.8; /* Line spacing variable */
+    --line-spacing: 1.25; /* Line spacing variable */
     --text-size: 2rem; /* Text size variable */
 }
 
@@ -52,7 +52,7 @@ table {
     outline: none;
     box-shadow: none;
     padding: calc(var(--base-spacing) * 5); /* Huge left-right padding */
-    font-size: var(--text-size); /* Use text size variable */
+    font-size: calc(2.2 * var(--text-size)); /* Use text size variable */
     line-height: var(--line-spacing); /* Use line spacing variable */
     font-family: Georgia, 'Times New Roman', Times, serif;
     overflow-x: hidden; /* Prevent horizontal overflow */
@@ -120,6 +120,7 @@ table {
     flex-direction: row;
     align-items: center;
     width: fit-content;
+    opacity: 1; /* Ensure no transparency */
 }
 
 #hovermenu.visible {
