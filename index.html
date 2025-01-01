@@ -31,6 +31,7 @@
       <input type="range" id="padding-slider" min="0" max="50" step="1" value="8">
     </div>
     <button id="copy-all-json-button" class="copy-json-button">Copy All Highlights to JSON</button>
+
   </div>
 
   <div id="tab-navigation">
@@ -60,6 +61,21 @@
       <button id="settings-copy-all-json-button" class="copy-json-button">Copy All Highlights to JSON</button>
       <button id="pin-copy-all-json">📌</button>
     </div>
+    <div style="text-align: right;">
+      <a id="about-colorpad-link" href="https://github.com/shawnfromportland/colorpad"
+        style="font-weight: bolder; margin-left: auto; margin-right: auto; background-color:#DDD; padding:1rem">about
+        <span id="colorpad-text">colorpad</span></a>
+    </div>
+
+    <script>
+      const colorpadText = document.getElementById('colorpad-text');
+      const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3']; // Example colors
+
+      colorpadText.innerHTML = 'colorpad'.split('').map((letter, index) => {
+        const color = colors[index % colors.length];
+        return `<span style="color: ${color};">${letter}</span>`;
+      }).join('');
+    </script>
   </div>
 
   <div id="gutter-lines"></div>

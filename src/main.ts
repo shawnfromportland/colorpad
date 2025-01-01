@@ -336,7 +336,8 @@ function displayCitationView(color: Color) {
 
         const copyJsonButton = document.createElement('button');
         copyJsonButton.id = 'copy-json-button';
-        copyJsonButton.textContent = '📄 JSON';
+        copyJsonButton.textContent = '📄 COPY JSON';
+        copyJsonButton.classList.add('copy-json-button');
         copyJsonButton.addEventListener('click', (event) => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(mainEditor?.innerHTML || '', 'text/html');
@@ -692,12 +693,10 @@ document.addEventListener('DOMContentLoaded',async () => {
         if (mainEditor && contextMenu && !contextMenu.contains(target) && !mainEditor.contains(target)) {
             contextMenu.classList.remove('visible');
         }
-    });
-
-    // Add event listener to hide citation view when clicking outside
-    document.addEventListener('click', (event) => {
-        const target = event.target as HTMLElement;
-        if (!target.closest('.citation-highlight') && !target.closest('#citation-view')) {
+        
+        console.log('testing citationview click ');
+        if ( !target.closest('.citation-highlight')) {
+            console.log('hiding citation view ');
             hideCitationView();
         }
     });
