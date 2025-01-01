@@ -41,7 +41,10 @@ const colorpadDoc: ColorpadDoc = {
       theme: "dark",
       fontSize: 14,
       lineHeight: 1.5,
-      margins: 2
+      margins: 2,
+      pinnedLineSpacing: true,
+      pinnedTextSize: true,
+      pinnedPadding: true
     },
 
   };
@@ -230,6 +233,7 @@ function reactivityUpdates(){
     updateDynamicStyles(colorpadDoc.colors);
     populateContextMenu(colorpadDoc.colors);
     createTabNavigation(colorpadDoc.colors); // Add this line
+    updateSliderVisibility();
     
 }
 
@@ -349,6 +353,23 @@ function createTabNavigation(colors: Color[]) {
         });
     } else {
         console.error('Tab container element not found');
+    }
+}
+
+// Function to update the visibility of sliders based on pinned settings
+function updateSliderVisibility() {
+    const lineSpacingSliderContainer = document.getElementById('line-spacing-slider-container');
+    const textSizeSliderContainer = document.getElementById('text-size-slider-container');
+    const paddingSliderContainer = document.getElementById('padding-slider-container');
+
+    if (lineSpacingSliderContainer) {
+        lineSpacingSliderContainer.style.display = colorpadDoc.settings.pinnedLineSpacing ? 'block' : 'none';
+    }
+    if (textSizeSliderContainer) {
+        textSizeSliderContainer.style.display = colorpadDoc.settings.pinnedTextSize ? 'block' : 'none';
+    }
+    if (paddingSliderContainer) {
+        paddingSliderContainer.style.display = colorpadDoc.settings.pinnedPadding ? 'block' : 'none';
     }
 }
 
@@ -485,5 +506,6 @@ document.addEventListener('DOMContentLoaded',async () => {
         document.documentElement.style.setProperty('--text-size', `${value}rem`);
     });
 
+    updateSliderVisibility();
 });
 

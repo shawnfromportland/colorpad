@@ -250,3 +250,12 @@ table {
     border: 1px solid gray;
     padding: calc(var(--base-spacing) * 4);
 }
+
+#sliders {
+    position: fixed;
+    
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
