@@ -365,6 +365,28 @@ function createTabNavigation(colors: Color[]) {
     }
 }
 
+// Function to sync slider values between pinned sliders and settings view sliders
+function syncSliderValues() {
+    if (lineSpacingSlider) {
+        const settingsLineSpacingSlider = document.getElementById('settings-line-spacing-slider') as HTMLInputElement;
+        if (settingsLineSpacingSlider) {
+            settingsLineSpacingSlider.value = lineSpacingSlider.value;
+        }
+    }
+    if (textSizeSlider) {
+        const settingsTextSizeSlider = document.getElementById('settings-text-size-slider') as HTMLInputElement;
+        if (settingsTextSizeSlider) {
+            settingsTextSizeSlider.value = textSizeSlider.value;
+        }
+    }
+    if (paddingSlider) {
+        const settingsPaddingSlider = document.getElementById('settings-padding-slider') as HTMLInputElement;
+        if (settingsPaddingSlider) {
+            settingsPaddingSlider.value = paddingSlider.value;
+        }
+    }
+}
+
 // Function to update the visibility of sliders based on pinned settings
 function updateSliderVisibility() {
     const lineSpacingSliderContainer = document.getElementById('line-spacing-slider-container');
@@ -380,6 +402,8 @@ function updateSliderVisibility() {
     if (paddingSliderContainer) {
         paddingSliderContainer.style.display = colorpadDoc.settings.pinnedPadding ? 'block' : 'none';
     }
+
+    syncSliderValues(); // Sync slider values after updating visibility
 }
 
 // Function to toggle the visibility of the settings view
@@ -543,6 +567,39 @@ document.addEventListener('DOMContentLoaded',async () => {
     textSizeSlider.addEventListener('input', (event) => {
         const value = (event.target as HTMLInputElement).value;
         document.documentElement.style.setProperty('--text-size', `${value}rem`);
+    });
+
+    // Add event listeners for the settings view sliders
+    const settingsLineSpacingSlider = document.getElementById('settings-line-spacing-slider') as HTMLInputElement;
+    const settingsTextSizeSlider = document.getElementById('settings-text-size-slider') as HTMLInputElement;
+    const settingsPaddingSlider = document.getElementById('settings-padding-slider') as HTMLInputElement;
+
+    settingsLineSpacingSlider?.addEventListener('input', (event) => {
+        const value = (event.target as HTMLInputElement).value;
+        document.documentElement.style.setProperty('--line-spacing', value);
+        lineSpacingSlider!.value = value; // Sync with pinned slider
+        colorpadDoc.settings.lineHeight = parseFloat(value);
+        saveColorpadDoc();
+    });
+
+    settingsTextSizeSlider?.addEventListener('input', (event) => {
+        const value = (event.target as HTMLInputElement).value;
+        document.documentElement.style.setProperty('--text-size', `${value}rem`);
+        textSizeSlider!.value = value; // Sync with pinned slider
+        colorpadDoc.settings.fontSize = parseFloat(value);
+        saveColorpadDoc();
+    });
+
+    settingsPaddingSlider?.addEventListener('input', (event) => {
+        const paddingValue = (event.target as HTMLInputElement).value + 'rem';
+        mainEditor!.style.paddingLeft = paddingValue;
+        mainEditor!.style.paddingRight = paddingValue;
+        const citationView = document.getElementById('citation-view') as HTMLInputElement;
+        citationView.style.paddingLeft = paddingValue;
+        citationView.style.paddingRight = paddingValue;
+        paddingSlider!.value = (event.target as HTMLInputElement).value; // Sync with pinned slider
+        colorpadDoc.settings.margins = parseFloat((event.target as HTMLInputElement).value);
+        saveColorpadDoc();
     });
 
     updateSliderVisibility();
