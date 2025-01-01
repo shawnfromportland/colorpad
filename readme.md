@@ -2,6 +2,8 @@
 
 **Colorpad** is a browser-based web app designed for text comprehension and organization. 
 
+it's an ideal text preprocessing tool for use with LLMs. export key thoughts from bodies of text to JSON for use in LLM chat.
+
 ## What is Colorpad?
 Colorpad is an endless, context-free highlighter pad and filing cabinet for your thoughts. It’s a text comprehension processor that makes it easy to:
 - Highlight and organize raw text
