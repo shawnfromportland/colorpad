@@ -19,7 +19,7 @@ html, body {
 
 body {
     line-height: 1.2;
-    background: url('/cotton-texture.webp');
+    background-image: url('/cotton-texture.webp');
     /*background: url('/wool-texture.webp');*/
     background-size: cover;
     background-attachment: fixed;

@@ -1,44 +1,32 @@
 # Colorpad
 
-**Colorpad** is a browser-based web app designed for text comprehension and organization. 
+**Colorpad** is a simple little <i>text comprehension processor</i> tool. 
 
-it's an ideal text preprocessing tool for use with LLMs. export key thoughts from bodies of text to JSON for use in LLM chat.
+it's an ideal text preprocessing tool for use with LLMs. organize and export key thoughts and excerpts from bodies of text into JSON for use in LLM prompting.
 
-## What is Colorpad?
-Colorpad is an endless, context-free highlighter pad and filing cabinet for your thoughts. It’s a text comprehension processor that makes it easy to:
-- Highlight and organize raw text
-- Customize formatting and margins
-- Group related ideas with color-coded highlights
+colorpad is the digital version of taking a set of highlighters to your favorite textbook. 
 
-### Why Colorpad?
-Traditional tools can get in the way:
-- **Word processors**: Overloaded with features and hidden formatting
-- **Code editors**: Overkill for non-coding text workflows
+Traditional text tools can get in the way when your goal is noteatking and comprehension:
+- **Word processors**: Overloaded with distracting features and hidden formatting characters
+- **Code editors**: Overkill for non-coding text workflows, context menus popping up that you don't want or need
 
 Colorpad strips away complexity, giving you a fast, intuitive space to:
 - Dump, highlight, and organize text
 - Mentally categorize and process information
 - Create an instant filing system with color-coded highlights
-
-### Features
-- **Clean, modern interface**: Snappy, soothing, and distraction-free
-- **Highlighting system**: Choose colors to group and link related text
-- **Instant organization**: Automatically sort highlights into folders by color
-- **Customizable formatting**: Adjust margins and layout as needed
+- export your structured highlighted information ready to paste directly into an LLM prompt
 
 Colorpad is the perfect tool for:
 - Notetaking
-- Transcribing
-- Quickly organizing new information
+- Quickly organizing and categorizing new information
+- providing examples from source material to LLMs in many less back and forth steps
+- Transcribing with live editing (coming soon)
 
-
-## Examples & use cases
-- quick random access to information you've highlighted
-- copy JSON to provide your highlighted snippets as context or instructions to a LLM or script
-- transcribing
-- editing your writing
 
 
 ### Future Plans
-Colorpad will expand to a native mobile app for even greater flexibility.
-
+- color pickers (in progress)
+- maybe try a react version of the web app (currently it's vanilla ts)
+- native phone apps (in progress)
+- premade palette options (coming soon)
+- multiple documents allowed (coming soon)

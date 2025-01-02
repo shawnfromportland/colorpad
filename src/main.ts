@@ -70,20 +70,20 @@ var settingsTab: HTMLElement | null = null;
 let typingTimeout: number | undefined;
 
 // set editor contents to colorpadDoc body
-async function updateEditor(): Promise<void> {
-    if (mainEditor) {
-        const selection = window.getSelection();
-        const range = document.createRange();
-        const cursorPosition = selection?.getRangeAt(0).startOffset || 0;
+// async function updateEditor(): Promise<void> {
+//     if (mainEditor) {
+//         const selection = window.getSelection();
+//         const range = document.createRange();
+//         const cursorPosition = selection?.getRangeAt(0).startOffset || 0;
 
-        mainEditor.innerHTML = colorpadDoc.body; // Use innerHTML to render HTML tags
+//         mainEditor.innerHTML = colorpadDoc.body; // Use innerHTML to render HTML tags
 
-        range.setStart(mainEditor.childNodes[0], cursorPosition);
-        range.collapse(true);
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-    }
-}
+//         range.setStart(mainEditor.childNodes[0], cursorPosition);
+//         range.collapse(true);
+//         selection?.removeAllRanges();
+//         selection?.addRange(range);
+//     }
+// }
 
 // set colorpad.body to editor contents (after changes)
 function updateCurrentColorpadDocFromInput() {
@@ -555,7 +555,7 @@ function copyAllHighlightsToJson(event: MouseEvent) {
         const spans = doc.querySelectorAll(`span[data-color-id="${color.id}"]`);
         const citations = Array.from(spans).map(span => span.textContent?.trim()).filter(Boolean);
         if (citations.length > 0) {
-            jsonData[color.name] = citations;
+            jsonData[color.name] = citations.filter((citation): citation is string => !!citation);
         }
     });
 
@@ -567,7 +567,7 @@ function copyAllHighlightsToJson(event: MouseEvent) {
 // Function to toggle pinning of the copy-all-json button
 function togglePinCopyAllJson() {
     const copyAllJsonButton = document.getElementById('copy-all-json-button');
-    const settingsCopyAllJsonButton = document.getElementById('settings-copy-all-json-button');
+    // const settingsCopyAllJsonButton = document.getElementById('settings-copy-all-json-button');
     const isPinned = copyAllJsonButton?.style.display !== 'none';
 
     if (isPinned) {
