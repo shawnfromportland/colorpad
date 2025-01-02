@@ -1,4 +1,5 @@
 # Colorpad
+<a href="https://www.buymeacoffee.com/shawnfromportland" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 **Colorpad** is a simple little <i>text comprehension processor</i> tool. 
 the digital version of taking a set of highlighters to your favorite textbook.   
