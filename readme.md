@@ -23,7 +23,7 @@ Colorpad is the perfect tool for:
 - providing examples from source material to LLMs in many less back and forth steps
 - Transcribing with live editing (coming soon)
 
-
+<a href="https://www.buymeacoffee.com/shawnfromportland" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ### Future Plans
 - color pickers (in progress)
