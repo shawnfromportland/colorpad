@@ -5,7 +5,7 @@
 the digital version of taking a set of highlighters to your favorite textbook.   
   
   <a href="https://shawnfromportland.com/colorpad/">try it here</a> (no data is stored on server)  
-  
+  <hr />
 it's an ideal text preprocessing tool for use with LLMs. organize and export key thoughts and excerpts from bodies of text into JSON for use in LLM prompting.
 
 no signup, all data stored on your device only
