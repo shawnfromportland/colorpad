@@ -1,10 +1,11 @@
 # Colorpad
 
 **Colorpad** is a simple little <i>text comprehension processor</i> tool. 
+the digital version of taking a set of highlighters to your favorite textbook.   
 
 it's an ideal text preprocessing tool for use with LLMs. organize and export key thoughts and excerpts from bodies of text into JSON for use in LLM prompting.
 
-colorpad is the digital version of taking a set of highlighters to your favorite textbook. 
+no signup, all data stored on your device only
 
 Traditional text tools can get in the way when your goal is noteatking and comprehension:
 - **Word processors**: Overloaded with distracting features and hidden formatting characters
